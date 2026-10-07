@@ -186,3 +186,11 @@ Standalone R2 upload (S3 SigV4, stdlib). Also used by `generate_image.py`.
 python3 /workspace/grok-tools/upload_r2.py --file /path/to/image.png --key images/demo.png
 # or stdin: {"file":"...","key":"...","bucket":"grokbot"}
 ```
+
+## send_riker.py
+
+POST a message to Captain Riker’s Titan webhook (`RIKER_WEBHOOK_URL` + `RIKER_WEBHOOK_AUTH`).
+
+```bash
+python3 send_riker.py --message "Hello Number One"
+```
