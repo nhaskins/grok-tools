@@ -6,7 +6,16 @@ Python scripts Grok Bot writes and runs. Logs go in `logs/` (not committed). Sec
 
 General Cursor-CLI digger: pass a **research prompt** and the **shape of results** to return. Different tasks use different schemas (job cards, calendar events, food events, …).
 
-Stdout is one JSON object: `{ok, statusCode, items, trello?, usage?, error?}`. Progress logs go to `logs/dig.log` and stderr. Secrets are never printed.
+Stdout is one JSON object: `{ok, statusCode, items, doc?, trello?, usage?, error?}`. Progress logs go to `logs/dig.log` and stderr. Secrets are never printed.
+
+### Review markdown doc
+
+On success, dig writes a short reviewable markdown file of the returned items (title/key fields + links — no full agent reply dump):
+
+- Default path: `/workspace/tmp/dig-<YYYYMMDD-HHMMSS>.md` (directory created if needed)
+- Override with `--out path.md` (or stdin JSON `out` / `doc`)
+- Absolute path is in the stdout JSON field **`doc`**, and logged to stderr / `logs/dig.log` as `DOC=...`
+- On failure, no doc is required (skipped)
 
 ### How schema is passed (first match wins)
 
@@ -54,6 +63,14 @@ python3 /workspace/grok-tools/dig.py \
   --prompt "Public events in Chicago next week worth putting on a calendar"
 ```
 
+**Custom review doc path:**
+
+```bash
+python3 /workspace/grok-tools/dig.py \
+  --preset jobs --prompt "Find open remote Python roles" \
+  --out /workspace/tmp/jobs.md
+```
+
 **Stdin JSON** (when `--prompt` is omitted):
 
 ```bash
@@ -80,4 +97,83 @@ Thin wrapper that calls `dig.py --preset jobs --trello` (or `--skip-trello`). Pr
 ```bash
 python3 /workspace/grok-tools/dig_jobs.py --prompt "Find open remote Python roles for Nate Haskins"
 python3 /workspace/grok-tools/dig_jobs.py --prompt "..." --skip-trello
+```
+
+## generate_image.py
+
+Replaces the n8n `generate-image` webhook: build a Cursor agent prompt (optional Nate face refs), generate a PNG, upload to Cloudflare R2, print one JSON object.
+
+Stdout success: `{ok:true, url:"https://content.natehaskins.com/...", path, usage, ...}`.  
+Failure: `{ok:false, error:"..."}`. Logs go to `logs/generate-image.log` and stderr. Secrets are never printed.
+
+### Modes
+
+- `normal` (default) — text-only, or caller-supplied style/scene refs
+- `ref` — also attach Nate face photo refs from CDN (can combine with caller refs)
+
+### Examples
+
+**Normal (upload to R2):**
+
+```bash
+python3 /workspace/grok-tools/generate_image.py \
+  --prompt "A large bucket overflowing with shiny arcade game tokens" \
+  --artifact artifacts/arcade-token-bucket.png \
+  --r2-prefix images
+```
+
+**With face refs (`mode=ref`):**
+
+```bash
+python3 /workspace/grok-tools/generate_image.py \
+  --mode ref \
+  --prompt "Bold 16:9 thumbnail: subject holding a glowing token jar" \
+  --artifact artifacts/image-with-refs.png
+```
+
+**Caller style refs + local only (no R2):**
+
+```bash
+python3 /workspace/grok-tools/generate_image.py \
+  --prompt "Match this product style" \
+  --ref-url "https://example.com/style-reference.png" \
+  --skip-r2
+```
+
+**Stdin JSON** (old webhook body shape):
+
+```bash
+echo '{
+  "prompt": "<Image brief>",
+  "mode": "ref",
+  "artifactPath": "artifacts/image-with-refs.png",
+  "r2KeyPrefix": "images",
+  "callerReferenceUrls": "[\"https://example.com/style-reference.png\"]"
+}' | python3 /workspace/grok-tools/generate_image.py
+```
+
+**Stub dry run** (no Cursor agent):
+
+```bash
+python3 /workspace/grok-tools/generate_image.py --stub --prompt 'test' --skip-r2
+```
+
+### Env
+
+| Variable | Default | Meaning |
+|----------|---------|---------|
+| `IMAGE_AGENT_MODEL` | `composer-2.5` | Cursor agent model |
+| `IMAGE_AGENT_TIMEOUT_SEC` | `7200` | Agent timeout (image gen is slow) |
+| `IMAGE_AGENT_WORKSPACE` | `/workspace/grok-tools` | Agent workspace / artifact root |
+| `CURSOR_AGENT_BIN` | `agent` | Cursor CLI binary |
+
+Needs `agent` on PATH plus Cursor and R2 secrets in env (or via `export-card-secrets.py`). Shared agent helpers: `agent_run.py`. R2 upload primitive: `upload_r2.py`.
+
+### upload_r2.py
+
+Standalone R2 upload (S3 SigV4, stdlib). Also used by `generate_image.py`.
+
+```bash
+python3 /workspace/grok-tools/upload_r2.py --file /path/to/image.png --key images/demo.png
+# or stdin: {"file":"...","key":"...","bucket":"grokbot"}
 ```

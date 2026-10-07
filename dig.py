@@ -4,7 +4,8 @@
 Caller passes a research brief and the shape of array items to return.
 Optional Trello card creation. See README for examples.
 
-Stdout: one JSON object {ok, statusCode, items, trello?, usage?, error?}.
+Stdout: one JSON object {ok, statusCode, items, doc?, trello?, usage?, error?}.
+On success, also writes a short markdown review doc under /workspace/tmp/ (or --out).
 Never prints secrets.
 """
 
@@ -31,6 +32,7 @@ EXPORT_SECRETS = SCRIPT_DIR / "export-card-secrets.py"
 DEFAULT_WORKSPACE = "/workspace/grok-tools"
 DEFAULT_LIST_ID = "6a67a6a08493050e627d93bb"
 DEFAULT_ITEM_KEY = "items"
+DEFAULT_DOC_DIR = Path("/workspace/tmp")
 
 # Jobs preset: same semantics as dig-jobs-agent (active listings only).
 JOBS_PRESET_SCHEMA: dict[str, Any] = {
@@ -460,6 +462,149 @@ class _SafeFormat(dict):
         return ""
 
 
+
+def default_doc_path() -> Path:
+    """Timestamped markdown path under /workspace/tmp/."""
+    stamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S")
+    return DEFAULT_DOC_DIR / f"dig-{stamp}.md"
+
+
+def _item_title(item: dict[str, Any]) -> str:
+    for key in ("title", "name", "summary", "role", "position"):
+        val = item.get(key)
+        if val is not None and str(val).strip():
+            return str(val).strip()
+    return "Untitled"
+
+
+def _is_urlish(key: str, val: Any) -> bool:
+    if key.lower() in ("url", "link", "href", "listingurl", "listing_url", "website"):
+        return True
+    if isinstance(val, str):
+        s = val.strip()
+        return s.startswith("http://") or s.startswith("https://")
+    return False
+
+
+def _fmt_scalar(val: Any, *, max_len: int = 400) -> str:
+    if val is None:
+        return ""
+    if isinstance(val, (dict, list)):
+        try:
+            s = json.dumps(val, ensure_ascii=False)
+        except (TypeError, ValueError):
+            s = str(val)
+    else:
+        s = str(val).strip()
+    if len(s) > max_len:
+        s = s[: max_len - 1].rstrip() + "…"
+    return s
+
+
+def format_items_markdown(
+    items: list[dict[str, Any]],
+    *,
+    prompt: str = "",
+    schema_src: str = "",
+) -> str:
+    """Lean reviewable markdown: H1 + numbered items with key fields and links."""
+    n = len(items)
+    lines: list[str] = [f"# Dig results ({n})", ""]
+    dug = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z")
+    meta_bits = [f"Dug {dug}"]
+    if schema_src:
+        meta_bits.append(schema_src)
+    lines.append(" · ".join(meta_bits))
+    if prompt.strip():
+        # One short line only — no full dump
+        brief = prompt.strip().replace("\n", " ")
+        if len(brief) > 160:
+            brief = brief[:159].rstrip() + "…"
+        lines.append(f"Prompt: {brief}")
+    lines.append("")
+
+    title_keys = {"title", "name", "summary", "role", "position"}
+    # Prefer these early after the heading
+    early = ("date", "start", "when", "end", "pay", "location", "venue")
+
+    if not items:
+        lines.append("_No items._")
+        lines.append("")
+        return "\n".join(lines)
+
+    for idx, item in enumerate(items, start=1):
+        title = _item_title(item)
+        lines.append(f"{idx}. **{title}**")
+
+        used = set()
+        # Mark which title field we used so we don't repeat it
+        for key in ("title", "name", "summary", "role", "position"):
+            val = item.get(key)
+            if val is not None and str(val).strip() == title:
+                used.add(key)
+                break
+
+        # Early fields (date/start/etc.) then url, then the rest
+        ordered: list[str] = []
+        for key in early:
+            if key in item and key not in used:
+                ordered.append(key)
+        # urls next
+        url_keys = [
+            k
+            for k in item.keys()
+            if k not in used
+            and k not in ordered
+            and _is_urlish(k, item.get(k))
+        ]
+        ordered.extend(url_keys)
+        # remaining
+        for key in item.keys():
+            if key in used or key in ordered:
+                continue
+            ordered.append(key)
+
+        for key in ordered:
+            val = item.get(key)
+            if val is None:
+                continue
+            if isinstance(val, str) and not val.strip():
+                continue
+            label = key.replace("_", " ").strip().capitalize()
+            if key.lower() in ("url", "link", "href"):
+                label = key.upper() if key.lower() == "url" else label
+            if _is_urlish(key, val):
+                href = _fmt_scalar(val, max_len=2000)
+                if href.startswith(("http://", "https://")):
+                    lines.append(f"   - {label}: [{href}]({href})")
+                else:
+                    lines.append(f"   - {label}: {href}")
+            else:
+                lines.append(f"   - {label}: {_fmt_scalar(val)}")
+
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+def write_items_doc(
+    items: list[dict[str, Any]],
+    out_path: Path,
+    *,
+    prompt: str = "",
+    schema_src: str = "",
+) -> Path:
+    """Write markdown doc; create parent dirs. Returns absolute path."""
+    path = out_path.expanduser()
+    if not path.is_absolute():
+        path = Path.cwd() / path
+    path = path.resolve()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    body = format_items_markdown(items, prompt=prompt, schema_src=schema_src)
+    path.write_text(body, encoding="utf-8")
+    return path
+
+
 def create_trello_cards(
     items: list[dict[str, Any]],
     list_id: str,
@@ -538,6 +683,7 @@ Examples:
   dig.py --schema-file events.schema.json --trello --prompt "Food events this weekend"
   dig.py --schema '{"items":[{"summary":"","start":"","end":"","location":"","url":""}]}' \\
          --prompt "Calendar-worthy events in Austin next week"
+  dig.py --preset jobs --prompt "..." --out /workspace/tmp/jobs.md
 """,
     )
     p.add_argument("--prompt", help="Research brief. If omitted, read JSON from stdin.")
@@ -593,6 +739,15 @@ Examples:
         dest="card_desc_template",
         default=None,
         help="Optional Python format string for card desc, e.g. 'Pay: {pay}\\n{url}'.",
+    )
+    p.add_argument(
+        "--out",
+        dest="out",
+        default=None,
+        help=(
+            "Write review markdown to this path. Default: "
+            f"{DEFAULT_DOC_DIR}/dig-<YYYYMMDD-HHMMSS>.md"
+        ),
     )
     return p
 
@@ -778,6 +933,28 @@ def main() -> None:
 
         from agent_run import model_name
 
+        # Resolve out path: --out, stdin.out / stdin.doc, or default timestamped file
+        out_arg = args.out or stdin_body.get("out") or stdin_body.get("doc")
+        if out_arg:
+            doc_target = Path(str(out_arg).strip())
+        else:
+            doc_target = default_doc_path()
+
+        doc_abs: str | None = None
+        try:
+            doc_path = write_items_doc(
+                items,
+                doc_target,
+                prompt=prompt,
+                schema_src=schema_src,
+            )
+            doc_abs = str(doc_path)
+            log(f"Wrote review doc: {doc_abs}")
+            print(f"DOC={doc_abs}", file=sys.stderr, flush=True)
+        except OSError as exc:
+            # Doc is best-effort on success path; still return items
+            log(f"warning: could not write review doc: {exc}")
+
         payload: dict[str, Any] = {
             "ok": True,
             "statusCode": 200,
@@ -792,12 +969,15 @@ def main() -> None:
             "schemaSource": schema_src,
             "at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         }
+        if doc_abs:
+            payload["doc"] = doc_abs
         # Backward compat for jobs consumers
         if is_jobs:
             payload["jobs"] = items
 
         log(
-            f"dig success items={len(items)} trello={len(trello_results)}",
+            f"dig success items={len(items)} trello={len(trello_results)}"
+            + (f" doc={doc_abs}" if doc_abs else ""),
             also_legacy=also_legacy,
         )
         emit_and_exit(payload, ok=True)

@@ -21,6 +21,7 @@ DEFAULT_TIMEOUT_SEC = 1200
 
 
 def model_name() -> str:
+    """Default model for dig; prefer DIG_* env. IMAGE_* is ignored here."""
     return (
         os.environ.get("DIG_AGENT_MODEL")
         or os.environ.get("DIG_JOBS_AGENT_MODEL")
@@ -29,12 +30,26 @@ def model_name() -> str:
 
 
 def timeout_sec() -> int:
+    """Default timeout for dig; prefer DIG_* env. IMAGE_* is ignored here."""
     raw = (
         os.environ.get("DIG_AGENT_TIMEOUT_SEC")
         or os.environ.get("DIG_JOBS_AGENT_TIMEOUT_SEC")
         or str(DEFAULT_TIMEOUT_SEC)
     )
     return int(raw)
+
+
+def image_model_name() -> str:
+    """Model for generate_image (IMAGE_AGENT_MODEL, else dig default)."""
+    return os.environ.get("IMAGE_AGENT_MODEL") or model_name()
+
+
+def image_timeout_sec() -> int:
+    """Timeout for generate_image (IMAGE_AGENT_TIMEOUT_SEC default 7200)."""
+    raw = os.environ.get("IMAGE_AGENT_TIMEOUT_SEC")
+    if raw is not None and str(raw).strip():
+        return int(raw)
+    return 7200
 
 
 def load_cursor_api_key(env: dict[str, str] | None = None) -> str:

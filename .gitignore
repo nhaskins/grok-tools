@@ -3,3 +3,9 @@ logs/
 .env
 __pycache__/
 .venv/
+
+data/
+*.db
+*.db-*
+
+artifacts/
