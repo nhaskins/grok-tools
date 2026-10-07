@@ -2,7 +2,8 @@
 """Generate an image via Cursor agent, then upload to Cloudflare R2.
 
 Replaces the n8n webhook generate-image flow. Stdout: one JSON object
-{ok:true, url, path, usage, ...} or {ok:false, error}. Never prints secrets.
+{ok:true, url, path, localArtifactPath, attach, attachPath, doc, usage, ...}
+or {ok:false, error}. Never prints secrets.
 """
 
 from __future__ import annotations
@@ -32,6 +33,7 @@ DEFAULT_PUBLIC_BASE = "https://content.natehaskins.com"
 DEFAULT_R2_BUCKET = "grokbot"
 DEFAULT_MODEL = "composer-2.5"
 DEFAULT_TIMEOUT_SEC = 7200
+DEFAULT_DOC_DIR = Path("/workspace/tmp")
 
 DEFAULT_PHOTO_REFS = [
     "https://content.natehaskins.com/photo_refs/nate-1.png",
@@ -357,11 +359,56 @@ def read_stdin_json_optional() -> dict[str, Any]:
 
 
 
+def default_doc_path() -> Path:
+    """Timestamped review markdown under /workspace/tmp/."""
+    stamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S")
+    return DEFAULT_DOC_DIR / f"generate-image-{stamp}.md"
+
+
+def write_image_doc(
+    *,
+    local_path: Path,
+    image_url: str | None,
+    prompt: str,
+    mode: str,
+) -> Path:
+    """Write a tiny sidecar markdown with the image embedded. Returns absolute path."""
+    doc_path = default_doc_path()
+    doc_path.parent.mkdir(parents=True, exist_ok=True)
+    abs_png = str(local_path.resolve())
+    # Prefer CDN URL for the markdown image when available; else local file path.
+    img_src = (image_url or "").strip() or abs_png
+    brief = prompt.strip().replace("\n", " ")
+    if len(brief) > 160:
+        brief = brief[:159].rstrip() + "…"
+    dug = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z")
+    lines = [
+        "# Generated image",
+        "",
+        f"Generated {dug} · mode={mode}",
+    ]
+    if brief:
+        lines.append(f"Prompt: {brief}")
+    lines.extend(
+        [
+            "",
+            f"![generated image]({img_src})",
+            "",
+            f"- Local: `{abs_png}`",
+        ]
+    )
+    if image_url:
+        lines.append(f"- URL: [{image_url}]({image_url})")
+    lines.append("")
+    doc_path.write_text("\n".join(lines), encoding="utf-8")
+    return doc_path.resolve()
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=(
             "Generate an image via Cursor agent and upload to R2. "
-            "Stdout is one JSON object {ok, url, path?, usage?, error?}."
+            "Stdout is one JSON object {ok, url, path, localArtifactPath, attach, attachPath, doc?, usage?, error?}."
         )
     )
     p.add_argument(
@@ -678,12 +725,31 @@ def main() -> None:
                 raise RuntimeError("R2 upload finished but no image URL was resolved")
             log(f"Uploaded: {image_url}")
 
+        abs_png = str(local_artifact.resolve())
+        doc_abs: str | None = None
+        try:
+            doc_path = write_image_doc(
+                local_path=local_artifact,
+                image_url=image_url,
+                prompt=prompt_subject,
+                mode=mode,
+            )
+            doc_abs = str(doc_path)
+            log(f"Wrote review doc: {doc_abs}")
+            log(f"DOC={doc_abs}")
+        except OSError as exc:
+            log(f"warning: could not write review doc: {exc}")
+
+        log(f"ATTACH={abs_png}")
+
         payload: dict[str, Any] = {
             "ok": True,
             "url": image_url,
-            "path": str(local_artifact.resolve()),
+            "path": abs_png,
             "artifactPath": rel_artifact,
-            "localArtifactPath": str(local_artifact.resolve()),
+            "localArtifactPath": abs_png,
+            "attach": True,
+            "attachPath": abs_png,
             "mode": mode,
             "r2KeyPrefix": r2_prefix,
             "r2ObjectKey": r2_key,
@@ -693,12 +759,16 @@ def main() -> None:
             "referenceImageCount": len(reference_images),
             "at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         }
+        if doc_abs:
+            payload["doc"] = doc_abs
         # Compat aliases matching old n8n finalize shape
         if image_url:
             payload["imageUrl"] = image_url
 
         log(
-            f"generate_image success url={image_url or 'null'} path={local_artifact}"
+            f"generate_image success url={image_url or 'null'} path={abs_png}"
+            + (f" doc={doc_abs}" if doc_abs else "")
+            + f" attach={abs_png}"
         )
         emit_and_exit(payload, ok=True)
 

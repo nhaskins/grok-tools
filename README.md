@@ -103,8 +103,17 @@ python3 /workspace/grok-tools/dig_jobs.py --prompt "..." --skip-trello
 
 Replaces the n8n `generate-image` webhook: build a Cursor agent prompt (optional Nate face refs), generate a PNG, upload to Cloudflare R2, print one JSON object.
 
-Stdout success: `{ok:true, url:"https://content.natehaskins.com/...", path, usage, ...}`.  
+Stdout success: `{ok:true, url, path, localArtifactPath, attach:true, attachPath, doc?, usage, ...}`.  
 Failure: `{ok:false, error:"..."}`. Logs go to `logs/generate-image.log` and stderr. Secrets are never printed.
+
+### Attach + review doc
+
+On success the script always signals the chat host to show the PNG:
+
+- **`attach`**: always `true`
+- **`attachPath`** / **`path`** / **`localArtifactPath`**: absolute path to the local PNG (Grok Bot should `SendToUser` with this file — do not only paste the CDN URL)
+- **`doc`**: absolute path to a tiny sidecar markdown under `/workspace/tmp/generate-image-<YYYYMMDD-HHMMSS>.md` (image embedded via CDN URL when uploaded, else the local path)
+- Logged as `DOC=...` and `ATTACH=...` on stderr / `logs/generate-image.log`
 
 ### Modes
 
