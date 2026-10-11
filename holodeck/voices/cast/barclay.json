@@ -1,0 +1,24 @@
+﻿{
+    "name":  "Lt. Reginald Barclay",
+    "engine":  "kokoro-82M design -\u003e chatterbox performance",
+    "design":  {
+                   "lang":  "a",
+                   "blend":  {
+                                 "am_liam":  0.5,
+                                 "am_eric":  0.5
+                             },
+                   "speed":  1.1,
+                   "ref_text":  "Oh! Um, hello there. I wasn\u0027t expecting anyone. I\u0027ve just been running a few diagnostics on the holodeck. Nothing dangerous, I promise. Well, mostly nothing dangerous.",
+                   "ref_wav":  "barclay-ref.wav",
+                   "f0_median_hz":  144,
+                   "ref_seconds":  8.8
+               },
+    "perform":  {
+                    "exaggeration":  0.6,
+                    "cfg_weight":  0.45,
+                    "excited_exaggeration":  0.75,
+                    "excited_cfg":  0.4,
+                    "seeds":  3
+                },
+    "notes":  "Nervous, earnest, higher/faster than Riker and Picard. Stammer via script wording only (e.g. \"I, I would like...\"); full sentences only."
+}

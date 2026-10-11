@@ -1,0 +1,39 @@
+﻿{
+    "character":  "picard",
+    "design":  {
+                   "engine":  "kokoro 0.9.x (hexgrad/Kokoro-82M), lang_code b (British G2P): kokoro_design.py jobs.json b",
+                   "blend":  {
+                                 "bm_lewis":  0.5,
+                                 "bm_george":  0.3,
+                                 "bm_daniel":  0.2
+                             },
+                   "speed":  0.88,
+                   "ref_text":  "Ensign, I have commanded starships for longer than you have been alive. Patience is not weakness. It is precision, applied with dignity, and a very good cup of tea.",
+                   "ref_file":  "C:\\AI\\voice\\cast\\picard-ref.wav",
+                   "observed":  "11.6 s, median F0 ~122 Hz, F0 spread 21 Hz (steadiest of 6 bm_ blends; all 6 whisper word-perfect)",
+                   "candidates":  "pk1 george.6+lewis.4 127Hz; pk2 george.5+daniel.3+fable.2 134Hz; pk3 lewis.5+george.3+daniel.2 122Hz (picked); pk4 daniel.6+george.4 132Hz; pk5 fable.5+george.5 131Hz; pk6 george 142Hz"
+               },
+    "perform":  {
+                    "engine":  "chatterbox-tts 0.1.7 (ResembleAI/chatterbox, English base model)",
+                    "temperature":  0.8,
+                    "defaults":  {
+                                     "exaggeration":  0.5,
+                                     "cfg_weight":  0.5
+                                 },
+                    "lines":  {
+                                  "picard-01-alerts":  {
+                                                           "text":  "Will, I have received four hundred alerts that you sat down.",
+                                                           "exaggeration":  0.5,
+                                                           "cfg_weight":  0.5,
+                                                           "seed":  1
+                                                       },
+                                  "picard-02-makeitstop":  {
+                                                               "text":  "Make it stop. Unsubscribe me from this, immediately.",
+                                                               "exaggeration":  0.7,
+                                                               "cfg_weight":  0.4,
+                                                               "seed":  1
+                                                           }
+                              }
+                },
+    "post":  "trim silence, highpass 60 Hz, loudnorm I=-16 TP=-1.5, mp3 192k mono 44.1k (finalize.sh); demo2 also atempo 1.05 to fit 20 s"
+}

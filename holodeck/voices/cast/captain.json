@@ -1,0 +1,46 @@
+{
+  "design": {
+    "engine": "kokoro 0.9.x (hexgrad/Kokoro-82M), lang_code a",
+    "blend": {
+      "am_onyx": 0.5,
+      "bm_lewis": 0.3,
+      "am_fenrir": 0.2
+    },
+    "speed": 0.88,
+    "ref_text": "The ship has weathered far worse than this. We hold our course, we trust our crew, and we see it through together. That is what it means to command.",
+    "ref_file": "C:\\AI\\voice\\cast\\captain-ref.wav",
+    "observed": "9.3 s, median F0 ~97 Hz (deepest of 3 blends)"
+  },
+  "perform": {
+    "engine": "chatterbox-tts 0.1.7 (ResembleAI/chatterbox, English base model)",
+    "temperature": 0.8,
+    "seed_note": "torch.manual_seed + cuda seed + random/np seed set per line",
+    "defaults": {
+      "exaggeration": 0.45,
+      "cfg_weight": 0.3
+    },
+    "lines": {
+      "captain-01-log": {
+        "text": "Captain's log, stardate four-seven-one-two. The Titan holds steady at the edge of the nebula.",
+        "exaggeration": 0.45,
+        "cfg_weight": 0.3,
+        "seed": 4
+      },
+      "captain-02-shields": {
+        "text": "Shields up. Systems green.",
+        "exaggeration": 0.55,
+        "cfg_weight": 0.5,
+        "seed": 2
+      },
+      "captain-03-engage": {
+        "text": "Take us out, Number One. ENGAGE!",
+        "exaggeration": 1.0,
+        "cfg_weight": 0.3,
+        "seed": 7,
+        "post": "trim first 1.35 s for the bare ENGAGE! (single-word prompts hallucinate in Chatterbox)"
+      }
+    }
+  },
+  "post": "trim silence, highpass 60 Hz, loudnorm I=-16 TP=-1.5, mp3 192k mono 44.1k",
+  "character": "captain"
+}

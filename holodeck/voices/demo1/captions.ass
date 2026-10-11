@@ -1,0 +1,23 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Line,Exo 2,60,&H00141618,&H00A8A8A8,&H00E6EEF3,&H00000000,1,0,0,0,100,100,1,0,1,6,0,2,90,90,42,1
+Style: Name,Permanent Marker,56,&H00141618,&H00141618,&H00E6EEF3,&H00000000,0,0,0,0,100,100,2,0,1,5,0,2,90,90,112,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 1,0:00:00.85,0:00:04.62,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k25}{\kf76}Morning, {\kf17}Grok {\kf58}Bot. {\kf23}Let's {\kf18}hear {\kf58}today's {\kf27}daily {\kf32}log.
+Dialogue: 1,0:00:00.85,0:00:04.62,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}RIKER
+Dialogue: 1,0:00:04.57,0:00:09.00,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k25}{\kf23}Daily {\kf24}log {\kf66}ready! {\kf16}I {\kf24}shipped {\kf33}forty {\kf41}features {\kf25}and {\kf24}fixed {\kf25}three {\kf21}hundred {\kf28}bugs.
+Dialogue: 1,0:00:04.57,0:00:09.00,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT
+Dialogue: 1,0:00:08.95,0:00:12.68,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k25}{\kf93}Impressive. {\kf8}And {\kf25}how {\kf28}many {\kf19}of {\kf17}those {\kf28}bugs {\kf21}did {\kf16}you {\kf32}create?
+Dialogue: 1,0:00:08.95,0:00:12.68,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}RIKER
+Dialogue: 1,0:00:12.63,0:00:16.08,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k25}{\kf32}Also {\kf28}three {\kf73}hundred. {\kf26}Perfectly {\kf57}balanced, {\kf24}Commander.
+Dialogue: 1,0:00:12.63,0:00:16.08,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT
+Dialogue: 1,0:00:16.03,0:00:19.42,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k25}{\kf39}Let's {\kf14}leave {\kf28}that {\kf23}part {\kf30}out {\kf12}of {\kf14}the {\kf53}Captain's {\kf21}log.
+Dialogue: 1,0:00:16.03,0:00:19.42,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}RIKER

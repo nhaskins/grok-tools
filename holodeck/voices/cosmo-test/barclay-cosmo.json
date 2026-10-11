@@ -1,0 +1,21 @@
+﻿{
+    "name":  "Lt. Reginald Barclay (Cosmo clone TEST)",
+    "engine":  "xAI Cosmo public sample -\u003e chatterbox performance",
+    "status":  "TEST ONLY - not for public use until xAI terms are checked",
+    "design":  {
+                   "source":  "xAI Grok voice \u0027Cosmo\u0027 public sample https://docs.x.ai/assets/audio/voice_cosmo.mp3 (16.9 s)",
+                   "edit":  "kept 1.30-4.25 + 4.95-6.40 + 6.55-16.80 s (long pauses shortened, no words cut), highpass 60, loudnorm -18 LUFS, 24 kHz mono",
+                   "ref_text":  "Ever wonder why the sky turns orange at sunset? Here\u0027s the short version. Sunlight travels through far more air and the blue gets scattered out along the way. What\u0027s left over is the orange. Wild, right? And that\u0027s just the beginning.",
+                   "ref_wav":  "barclay-cosmo-ref.wav",
+                   "f0_median_hz":  116,
+                   "ref_seconds":  14.65
+               },
+    "perform":  {
+                    "exaggeration":  0.6,
+                    "cfg_weight":  0.45,
+                    "excited_exaggeration":  0.75,
+                    "excited_cfg":  0.4,
+                    "seeds":  3
+                },
+    "notes":  "Alternative to barclay.json (Kokoro liam/eric). barclay.json / barclay-ref.wav unchanged."
+}

@@ -1,0 +1,23 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Line,Exo 2,58,&H00141618,&H00A8A8A8,&H00E6EEF3,&H00000000,1,0,0,0,100,100,1,0,1,6,0,2,90,90,42,1
+Style: Name,Permanent Marker,52,&H00141618,&H00141618,&H00E6EEF3,&H00000000,0,0,0,0,100,100,2,0,1,5,0,2,90,90,112,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 1,0:00:00.50,0:00:04.80,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k20}{\kf30}I, {\kf21}I {\kf17}gave {\kf26}the {\kf21}bridge {\kf22}a {\kf23}dark {\kf60}mode. {\kf22}It's {\kf25}easier {\kf35}on {\kf16}the {\kf28}eyes!
+Dialogue: 1,0:00:00.50,0:00:04.80,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}BARCLAY
+Dialogue: 1,0:00:04.80,0:00:08.75,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k20}{\kf74}Barclay, {\kf16}I {\kf27}can't {\kf20}see {\kf98}anything. {\kf8}Where {\kf16}did {\kf29}everyone {\kf41}go?
+Dialogue: 1,0:00:04.80,0:00:08.75,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}RIKER
+Dialogue: 1,0:00:08.75,0:00:12.40,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k19}{\kf35}Contrast {\kf69}ratio, {\kf22}one {\kf19}to {\kf41}one. {\kf6}Now {\kf30}adding {\kf19}alt {\kf30}text.
+Dialogue: 1,0:00:08.75,0:00:12.40,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT
+Dialogue: 1,0:00:12.45,0:00:16.07,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k19}{\kf38}Mister {\kf90}Barclay. {\kf9}Turn {\kf19}it {\kf88}off. {\kf24}Now.
+Dialogue: 1,0:00:12.45,0:00:16.07,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}PICARD
+Dialogue: 1,0:00:17.47,0:00:21.40,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k19}{\kf19}Light {\kf23}mode {\kf66}restored. {\kf62}Brightness, {\kf7}one {\kf26}hundred {\kf35}and {\kf26}ten {\kf32}percent.
+Dialogue: 1,0:00:17.47,0:00:21.40,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT

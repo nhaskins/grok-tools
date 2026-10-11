@@ -1,0 +1,39 @@
+{
+  "design": {
+    "engine": "kokoro",
+    "blend": {
+      "am_fenrir": 0.5,
+      "am_michael": 0.3,
+      "am_puck": 0.2
+    },
+    "speed": 1.0,
+    "ref_text": "Well, you know me. A little charm, a little luck, and a plan that mostly works. Trust me, Captain, this crew can handle anything you throw at it.",
+    "ref_file": "C:\\AI\\voice\\cast\\riker-ref.wav",
+    "observed": "9.2 s, median F0 ~121 Hz, most pitch movement of the Riker blends"
+  },
+  "perform": {
+    "engine": "chatterbox-tts 0.1.7 (ResembleAI/chatterbox, English base model)",
+    "temperature": 0.8,
+    "seed_note": "torch.manual_seed + cuda seed + random/np seed set per line",
+    "defaults": {
+      "exaggeration": 0.55,
+      "cfg_weight": 0.5
+    },
+    "lines": {
+      "riker-01-ready": {
+        "text": "Number One reporting. The crew's ready when you are, Captain.",
+        "exaggeration": 0.55,
+        "cfg_weight": 0.5,
+        "seed": 2
+      },
+      "riker-02-deal": {
+        "text": "I may have made a deal or two along the way.",
+        "exaggeration": 0.75,
+        "cfg_weight": 0.4,
+        "seed": 1
+      }
+    }
+  },
+  "post": "trim silence, highpass 60 Hz, loudnorm I=-16 TP=-1.5, mp3 192k mono 44.1k",
+  "character": "riker"
+}

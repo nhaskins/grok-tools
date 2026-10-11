@@ -1,0 +1,95 @@
+{
+ "total": 244.96,
+ "segs": [
+  {
+   "name": "intro",
+   "start": 0.0,
+   "dur": 1.0,
+   "gain": 0.7
+  },
+  {
+   "name": "card",
+   "start": 1.0,
+   "dur": 1.5,
+   "gain": 0.0
+  },
+  {
+   "name": "The Daily Log",
+   "start": 2.5,
+   "dur": 19.818,
+   "gain": 1.8
+  },
+  {
+   "name": "The Webhook",
+   "start": 22.318,
+   "dur": 20.109,
+   "gain": 1.7
+  },
+  {
+   "name": "Holodeck Program 01",
+   "start": 42.427,
+   "dur": 20.016,
+   "gain": 1.5
+  },
+  {
+   "name": "The Red Shirts",
+   "start": 62.443,
+   "dur": 21.842,
+   "gain": 2.0
+  },
+  {
+   "name": "Merge Conflict",
+   "start": 84.285,
+   "dur": 21.3,
+   "gain": 1.4
+  },
+  {
+   "name": "Ship It Friday",
+   "start": 105.585,
+   "dur": 17.973,
+   "gain": 1.5
+  },
+  {
+   "name": "Prompt Injection",
+   "start": 123.558,
+   "dur": 19.72,
+   "gain": 2.4
+  },
+  {
+   "name": "Hallucination",
+   "start": 143.278,
+   "dur": 19.758,
+   "gain": 2.4
+  },
+  {
+   "name": "Technical Debt",
+   "start": 163.036,
+   "dur": 20.22,
+   "gain": 2.2
+  },
+  {
+   "name": "CAPTCHA",
+   "start": 183.256,
+   "dur": 20.261,
+   "gain": 2.1
+  },
+  {
+   "name": "Context Window",
+   "start": 203.517,
+   "dur": 18.971,
+   "gain": 2.5
+  },
+  {
+   "name": "Rate Limited",
+   "start": 222.488,
+   "dur": 19.472,
+   "gain": 2.6
+  },
+  {
+   "name": "sting",
+   "start": 241.96,
+   "dur": 3.0,
+   "gain": 0.6
+  }
+ ]
+}

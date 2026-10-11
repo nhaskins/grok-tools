@@ -1,0 +1,24 @@
+﻿{
+    "design":  {
+                   "engine":  "kokoro",
+                   "blend":  {
+                                 "am_adam":  0.5,
+                                 "bm_fable":  0.5
+                             },
+                   "speed":  0.95,
+                   "lang":  "a",
+                   "ref_text":  "Hmm, that\u0027s a really interesting question. Let me think about it for a second. What if the answer isn\u0027t the point at all, and the fun part is figuring out what to ask next?",
+                   "ref_file":  "C:\\AI\\voice\\cast\\thinker-ref.wav",
+                   "observed":  "9.6 s, median F0 ~117 Hz, F0 spread 31 Hz (most animated of 6 blends: echo/adam/fable)"
+               },
+    "perform":  {
+                    "engine":  "chatterbox-tts 0.1.7",
+                    "temperature":  0.8,
+                    "defaults":  {
+                                     "exaggeration":  0.6,
+                                     "cfg_weight":  0.5
+                                 }
+                },
+    "character":  "thinker",
+    "look":  "Thinking with AI cover human (bean body, tuft, bow tie)"
+}

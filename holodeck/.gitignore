@@ -1,0 +1,25 @@
+# Holodeck: code and docs only. Media, models, envs and takes are regenerable.
+*.mp4
+*.mp3
+*.wav
+*.flac
+*.webm
+*.mov
+*.gif
+*.jpg
+*.jpeg
+*.png
+*.npy
+*.zip
+*.onnx
+*.pt
+*.pth
+*.safetensors
+*.bin
+*.log
+venv/
+.venv/
+__pycache__/
+*.pyc
+takes/
+bundle*/

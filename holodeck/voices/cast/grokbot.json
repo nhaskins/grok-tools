@@ -1,0 +1,38 @@
+{
+  "design": {
+    "engine": "kokoro",
+    "blend": {
+      "am_puck": 1.0
+    },
+    "speed": 1.1,
+    "ref_text": "Hi there! I'm running all diagnostics right now, and good news, everything looks fantastic. Want me to optimize the warp core while I'm at it?",
+    "ref_file": "C:\\AI\\voice\\cast\\grokbot-ref.wav",
+    "observed": "8.6 s, median F0 ~103 Hz, F0 spread 41 Hz (most animated)"
+  },
+  "perform": {
+    "engine": "chatterbox-tts 0.1.7 (ResembleAI/chatterbox, English base model)",
+    "temperature": 0.8,
+    "seed_note": "torch.manual_seed + cuda seed + random/np seed set per line",
+    "defaults": {
+      "exaggeration": 0.8,
+      "cfg_weight": 0.4
+    },
+    "lines": {
+      "grokbot-01-vibing": {
+        "text": "Hello, crew! All systems are, how you say, absolutely vibing.",
+        "exaggeration": 0.8,
+        "cfg_weight": 0.4,
+        "seed": 2
+      },
+      "grokbot-02-shipped": {
+        "text": "Beep boop. Code shipped. You're welcome.",
+        "exaggeration": 0.8,
+        "cfg_weight": 0.4,
+        "seed": 2
+      }
+    }
+  },
+  "post": "trim silence, then robot.sh: dry + ring-mod 110 Hz (weight 0.5) + fifth-up pitch layer (asetrate x1.5, weight 0.22), flanger delay 1.5 depth 1.5 speed 0.4, acrusher bits 9 mix 0.18, band 100-9000 Hz, loudnorm I=-16",
+  "robot_filter": "[0:a]aresample=24000,asplit=3[a][b][c];[b]aeval='val(0)*sin(2*PI*110*t)':c=same[rm];[c]asetrate=36000,aresample=24000,atempo=0.6667[hi];[a][rm][hi]amix=inputs=3:weights='1 0.5 0.22':normalize=0,flanger=delay=1.5:depth=1.5:speed=0.4:width=60,acrusher=bits=9:mix=0.18:mode=log:aa=1,highpass=f=100,lowpass=f=9000,loudnorm=I=-16:TP=-1.5:LRA=11",
+  "character": "grokbot"
+}

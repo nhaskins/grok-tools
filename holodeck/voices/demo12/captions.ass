@@ -1,0 +1,23 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Line,Exo 2,58,&H00141618,&H00A8A8A8,&H00E6EEF3,&H00000000,1,0,0,0,100,100,1,0,1,6,0,2,90,90,42,1
+Style: Name,Permanent Marker,52,&H00141618,&H00141618,&H00E6EEF3,&H00000000,0,0,0,0,100,100,2,0,1,5,0,2,90,90,112,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 1,0:00:00.50,0:00:03.47,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k20}{\kf24}Set {\kf16}a {\kf23}course {\kf28}for {\kf67}Risa, {\kf14}and {\kf20}make {\kf15}it {\kf26}so.
+Dialogue: 1,0:00:00.50,0:00:03.47,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}PICARD
+Dialogue: 1,0:00:03.47,0:00:07.01,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k20}{\kf56}Sorry, {\kf53}sir. {\kf20}Too {\kf20}many {\kf94}requests. {\kf5}Please {\kf24}take {\kf12}a {\kf13}number.
+Dialogue: 1,0:00:03.47,0:00:07.01,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT
+Dialogue: 1,0:00:07.01,0:00:11.42,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k20}{\kf21}Make {\kf16}it {\kf71}so. {\kf24}I {\kf77}said, {\kf25}make {\kf19}it {\kf70}so. {\kf3}Make {\kf22}it {\kf33}so!
+Dialogue: 1,0:00:07.01,0:00:11.42,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}PICARD
+Dialogue: 1,0:00:11.42,0:00:14.23,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k19}{\kf66}Captain, {\kf8}have {\kf11}you {\kf22}tried {\kf25}saying {\kf14}it {\kf27}slower?
+Dialogue: 1,0:00:11.42,0:00:14.23,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}RIKER
+Dialogue: 1,0:00:15.28,0:00:18.97,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k19}{\kf22}Rate {\kf19}limit {\kf82}reset. {\kf39}Executing {\kf17}forty {\kf26}seven {\kf21}orders {\kf20}at {\kf19}once.
+Dialogue: 1,0:00:15.28,0:00:18.97,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT
