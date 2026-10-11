@@ -90,6 +90,37 @@ Needs `agent` on PATH plus Cursor (and Trello if `--trello`) secrets in env, or 
 
 Shared agent helpers live in `agent_run.py`.
 
+### Duplicate protection (job ledger)
+
+Job-shaped results (`--preset jobs`, or any schema with title + url + a job field like company/pay/postedDate) are checked against a local SQLite ledger before they're returned or posted to Trello. Non-job schemas (events, calendar) are untouched.
+
+- DB: `/workspace/grok-tools/data/grok-tools.db` (override with `GROK_TOOLS_DB`), table `job_listings`. Module + CLI: `job_store.py`.
+- Exact duplicate = same `url_hash` (sha256 of the normalized URL: lowercase scheme/host, no `www.`, no fragment, tracking params like `utm_*`, `ref`, `source`, `gh_src`, `trk`, `gclid`, `fbclid` removed, other params sorted, no trailing slash). Always dropped.
+- Likely repost = same `company_title_key` (normalized company without inc/llc/corp/parentheticals + normalized title without req numbers like `#26-21440` / `- 2522`). Dropped by default; `--allow-reposts` keeps them, flagged with `repostOf`.
+- In-batch duplicates are dropped too. Up to 40 recent `Company — Title` pairs (≤2,000 chars) are added to the agent prompt so it looks for new openings.
+- Kept items are recorded as `seen`, or `potential` + card id/url when `--trello` creates a card. Automatic writes never downgrade a status (a `dead` job stays dead).
+- Stdout gains `dedupe: {db, received, kept, dropped[], flaggedReposts, recorded}`.
+- `--no-dedupe` bypasses all of it. `--items-file FILE` replays a saved dig output (JSON or review .md) instead of running the agent, for testing.
+
+```bash
+# Deduped job dig (review only)
+python3 /workspace/grok-tools/dig.py --schema-file /workspace/tmp/stl-ai-jobs.schema.json \
+  --prompt "$(cat /workspace/tmp/stl-ai-jobs.prompt.txt)"
+# ...and post survivors to Potential
+python3 /workspace/grok-tools/dig.py --preset jobs --trello --prompt "..."
+
+# Ledger CLI
+python3 /workspace/grok-tools/job_store.py stats
+python3 /workspace/grok-tools/job_store.py list --status potential
+python3 /workspace/grok-tools/job_store.py check --url "https://...?..utm_source=x"
+python3 /workspace/grok-tools/job_store.py mark --card <trelloCardId> --status applied
+python3 /workspace/grok-tools/job_store.py seed-dig /workspace/tmp/dig-*.out /workspace/tmp/dig-*.md
+python3 /workspace/grok-tools/job_store.py seed-trello --list Dead --status dead --limit 10   # read-only on Trello
+
+# Tests (temp copy of the ledger; no agent, no Trello)
+python3 -m unittest /workspace/grok-tools/tests/test_job_store.py -v
+```
+
 ## dig_jobs.py (compat wrapper)
 
 Thin wrapper that calls `dig.py --preset jobs --trello` (or `--skip-trello`). Prefer `dig.py` for new use.

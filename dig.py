@@ -749,6 +749,27 @@ Examples:
             f"{DEFAULT_DOC_DIR}/dig-<YYYYMMDD-HHMMSS>.md"
         ),
     )
+    p.add_argument(
+        "--no-dedupe",
+        dest="no_dedupe",
+        action="store_true",
+        help="Job results: skip the local job_listings ledger entirely (no filtering, no recording).",
+    )
+    p.add_argument(
+        "--allow-reposts",
+        dest="allow_reposts",
+        action="store_true",
+        help="Job results: keep items whose company+title matches a seen listing (flagged with repostOf).",
+    )
+    p.add_argument(
+        "--items-file",
+        dest="items_file",
+        default=None,
+        help=(
+            "Testing/replay: skip the Cursor agent and use items from a dig stdout JSON "
+            "or review .md file. Everything after the agent step (dedupe, Trello, doc) still runs."
+        ),
+    )
     return p
 
 
@@ -812,6 +833,10 @@ def main() -> None:
                 args.trello = True
             if stdin_body.get("skipTrello") is True or stdin_body.get("skip_trello") is True:
                 args.skip_trello = True
+            if stdin_body.get("noDedupe") is True or stdin_body.get("no_dedupe") is True:
+                args.no_dedupe = True
+            if stdin_body.get("allowReposts") is True or stdin_body.get("allow_reposts") is True:
+                args.allow_reposts = True
 
         if not prompt:
             raise RuntimeError("prompt is required (non-empty string)")
@@ -866,9 +891,40 @@ def main() -> None:
             f"list_id={list_id if do_trello else '-'}"
         )
 
-        env = load_secrets_into_env(dict(os.environ), need_trello=do_trello)
+        field_names = schema_field_names(schema)
+
+        # ---- job ledger (duplicate protection) — job-shaped schemas only
+        job_store = None
+        store_conn = None
+        dedupe_on = False
+        if not args.no_dedupe:
+            import job_store as _js  # noqa: E402
+
+            if _js.is_job_shaped(field_names, preset_jobs=is_jobs):
+                job_store = _js
+                try:
+                    store_conn = _js.connect()
+                    dedupe_on = True
+                    log(f"dedupe on: job ledger {_js.db_path()}")
+                except Exception as exc:  # ledger problems must not kill a dig
+                    log(f"warning: job ledger unavailable, dedupe off: {exc}")
+        else:
+            log("dedupe off (--no-dedupe)")
+
+        replay = args.items_file
+        env = load_secrets_into_env(
+            dict(os.environ), need_trello=do_trello
+        ) if (not replay or do_trello) else dict(os.environ)
 
         extra_rules = JOBS_PRESET_EXTRA_RULES if is_jobs else ""
+        if dedupe_on and store_conn is not None:
+            pairs = job_store.seen_pairs_for_prompt(store_conn)
+            if pairs:
+                extra_rules = (extra_rules + "\n" if extra_rules else "") + (
+                    "- Already tracked (skip these and reposts of them; find different openings): "
+                    + "; ".join(pairs)
+                )
+                log(f"dedupe: passed {len(pairs)} seen company/title pairs to the agent prompt")
         # For jobs preset, agent may still emit "jobs"; we ask for items but accept both.
         agent_item_key = item_key
         agent_prompt = prompt + build_agent_suffix(
@@ -880,31 +936,37 @@ def main() -> None:
         if not ws_path.is_dir():
             raise RuntimeError(f"workspace is not a directory: {ws_path}")
 
-        api_key = agent_run.load_cursor_api_key(env)
-        code, stdout, stderr = agent_run.run_agent(
-            agent_prompt,
-            api_key,
-            ws_path.resolve(),
-            env=env,
-            log_fn=log,
-        )
+        if replay:
+            import job_store as _js_replay  # noqa: E402
 
-        reply, usage, meta, parsed = agent_run.parse_agent_stdout(stdout)
-        if not parsed:
-            log("Failed to parse Cursor agent JSON stdout; using raw stdout as reply")
-            reply = stdout.strip() or stderr.strip()
-        elif not reply:
-            reply = stderr.strip()
+            log(f"replay: using items from {replay} (agent not run)")
+            raw_items = _js_replay.load_dig_items(Path(replay))
+            reply, usage = f"(replay of {replay})", {}
+        else:
+            api_key = agent_run.load_cursor_api_key(env)
+            code, stdout, stderr = agent_run.run_agent(
+                agent_prompt,
+                api_key,
+                ws_path.resolve(),
+                env=env,
+                log_fn=log,
+            )
 
-        if code != 0 or meta.get("agentIsError"):
-            detail = f"agent exited {code}" if code != 0 else "agent returned is_error"
-            raise RuntimeError(f"{detail}: {(reply or '')[:500]}")
+            reply, usage, meta, parsed = agent_run.parse_agent_stdout(stdout)
+            if not parsed:
+                log("Failed to parse Cursor agent JSON stdout; using raw stdout as reply")
+                reply = stdout.strip() or stderr.strip()
+            elif not reply:
+                reply = stderr.strip()
 
-        alias = ("jobs",) if is_jobs or item_key == "items" else ()
-        raw_items = agent_run.extract_items_array(
-            reply, item_key=item_key, alias_keys=alias
-        )
-        field_names = schema_field_names(schema)
+            if code != 0 or meta.get("agentIsError"):
+                detail = f"agent exited {code}" if code != 0 else "agent returned is_error"
+                raise RuntimeError(f"{detail}: {(reply or '')[:500]}")
+
+            alias = ("jobs",) if is_jobs or item_key == "items" else ()
+            raw_items = agent_run.extract_items_array(
+                reply, item_key=item_key, alias_keys=alias
+            )
         items: list[dict[str, Any]] = []
         for raw in raw_items:
             norm = light_normalize_item(raw, field_names)
@@ -912,6 +974,24 @@ def main() -> None:
                 items.append(norm)
 
         log(f"Agent ok; items={len(items)}")
+
+        dedupe_info: dict[str, Any] | None = None
+        if dedupe_on and store_conn is not None:
+            before = len(items)
+            items, dropped = job_store.filter_new(
+                store_conn, items, allow_reposts=bool(args.allow_reposts)
+            )
+            flagged = sum(1 for it in items if it.get("repostOf"))
+            dedupe_info = {
+                "db": str(job_store.db_path()),
+                "received": before,
+                "kept": len(items),
+                "dropped": dropped,
+                "flaggedReposts": flagged,
+                "allowReposts": bool(args.allow_reposts),
+            }
+            log(f"dedupe: received={before} kept={len(items)} dropped={len(dropped)} "
+                f"flaggedReposts={flagged}")
 
         trello_results: list[dict[str, Any]] = []
         if not do_trello:
@@ -930,6 +1010,26 @@ def main() -> None:
                 r.get("ok") for r in trello_results
             ):
                 raise RuntimeError("One or more Trello card creates failed")
+
+        if dedupe_on and store_conn is not None and dedupe_info is not None:
+            recorded = 0
+            for idx, it in enumerate(items):
+                tr = trello_results[idx] if idx < len(trello_results) else None
+                try:
+                    job_store.upsert(
+                        store_conn,
+                        it,
+                        source="dig",
+                        status="potential" if tr and tr.get("cardId") else "seen",
+                        trello_card_id=(tr or {}).get("cardId"),
+                        trello_card_url=(tr or {}).get("cardUrl"),
+                        notes=("possible repost of " + it["repostOf"]) if it.get("repostOf") else None,
+                    )
+                    recorded += 1
+                except Exception as exc:
+                    log(f"warning: could not record item in job ledger: {exc}")
+            dedupe_info["recorded"] = recorded
+            log(f"dedupe: recorded {recorded} new item(s) in job ledger")
 
         from agent_run import model_name
 
@@ -971,6 +1071,8 @@ def main() -> None:
         }
         if doc_abs:
             payload["doc"] = doc_abs
+        if dedupe_info is not None:
+            payload["dedupe"] = dedupe_info
         # Backward compat for jobs consumers
         if is_jobs:
             payload["jobs"] = items
