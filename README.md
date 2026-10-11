@@ -225,3 +225,54 @@ POST a message to Captain Riker’s Titan webhook (`RIKER_WEBHOOK_URL` + `RIKER_
 ```bash
 python3 send_riker.py --message "Hello Number One"
 ```
+
+## YouTube (youtube_auth.py + youtube_upload.py)
+
+Schedule uploads to Nate's two channels via the YouTube Data API v3 (stdlib only).
+Channel aliases: `main`, `clips`. Refresh tokens live in `data/youtube_tokens.json`
+(0600, gitignored) keyed by alias, with the channel id/title recorded at auth time.
+
+### Env
+
+- `YOUTUBE_CLIENT_ID` / `YOUTUBE_CLIENT_SECRET` (preferred), falling back to
+  `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`. Never printed.
+- Google Cloud project must have **YouTube Data API v3** enabled.
+- Best client type: **TVs and Limited Input devices** (enables device flow). A
+  **Desktop app** client also works via the manual path (`http://localhost` redirect).
+- OAuth consent screen: while in *Testing*, add Nate's Google account as a test user,
+  and note refresh tokens expire after 7 days. Set it to *In production* for durable tokens.
+- Unverified (unaudited) API projects: YouTube locks API-uploaded videos to **private**
+  until the project passes the YouTube API compliance audit, so `--publish-at` scheduling
+  only goes public on an audited project. Custom thumbnails need a phone-verified channel.
+
+### Auth (once per channel)
+
+Nate approves in his own browser, so there is no localhost callback on the box.
+
+```bash
+# Device flow (tried first): prints verification_url + user_code
+python3 youtube_auth.py start --alias main
+python3 youtube_auth.py poll --alias main --wait     # after Nate approves
+
+# Manual fallback (auto-selected if the client rejects device flow, or --flow manual):
+# start prints auth_url; Nate approves, copies the dead http://localhost/?code=... URL
+YT_CODE='http://localhost/?state=...&code=...' python3 youtube_auth.py finish --alias main --code-env YT_CODE
+# or: printf '%s' "$URL" | python3 youtube_auth.py finish --alias main
+
+python3 youtube_auth.py status    # refreshes each token, shows channel titles
+```
+
+In the Google consent screen, pick the right channel (brand account) for each alias.
+
+### Upload
+
+```bash
+python3 youtube_upload.py --alias clips --file ep.mp4 --title "The Daily Log" \
+  --description "..." --tags "AI,Star Trek" --thumbnail thumb.jpg \
+  --publish-at 2026-10-13T08:00:00-05:00 --category 24 --dry-run
+```
+
+`--publish-at` (RFC3339 with offset) forces `private` + `status.publishAt`. Defaults:
+`--privacy private`, `--category 28`, `--made-for-kids false`. `--dry-run` validates
+inputs and auth without uploading. Output: `{ok, video_id, url, studio_url, ...}`.
+A thumbnail failure is reported (`thumbnail_error`) without failing the upload.
