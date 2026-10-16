@@ -1,0 +1,162 @@
+[
+ {
+  "n": 1,
+  "start": 0.0,
+  "end": 4.67,
+  "section": "Intro",
+  "camera": "Locked wide, slow L->R starfield drift + 2% push",
+  "action": "Ink stars on paper, a few twinkle",
+  "text": "-",
+  "sync": "Cold open; first twinkle on hit 1.37 s"
+ },
+ {
+  "n": 2,
+  "start": 4.67,
+  "end": 12.89,
+  "section": "Intro/A",
+  "camera": "Slow pan right past ringed planet",
+  "action": "Ringed planet rolls through frame",
+  "text": "-",
+  "sync": "Cut on bar 3 downbeat, right after the 3.99 s swell; ring catches the 5.39 s hit"
+ },
+ {
+  "n": 3,
+  "start": 12.89,
+  "end": 16.95,
+  "section": "A",
+  "camera": "Static wide, ship tiny lower-left, drifts up-right",
+  "action": "Starship Grokbot glides into view",
+  "text": "-",
+  "sync": "Cut on bar 7; ship reaches frame centre by bar 8"
+ },
+ {
+  "n": 4,
+  "start": 16.95,
+  "end": 25.05,
+  "section": "A (dip)",
+  "camera": "Low angle, ship slides past camera, very slow",
+  "action": "Hull fills frame; saucer GLINT star-flash",
+  "text": "-",
+  "sync": "Glint lands on bar 10 downbeat (~21.0 s)"
+ },
+ {
+  "n": 5,
+  "start": 25.05,
+  "end": 29.07,
+  "section": "Build",
+  "camera": "Punch-in medium, chair centre",
+  "action": "RIKER swings leg over chair, sits backwards, beard-stroke",
+  "text": "RIKER / Number One (backwards)",
+  "sync": "Cut on 25.03 hit; leg-swing on the 25.96 swell"
+ },
+ {
+  "n": 6,
+  "start": 29.07,
+  "end": 33.13,
+  "section": "Build",
+  "camera": "Holodeck grid wide, slow push into arch",
+  "action": "BARCLAY opens program windows, hearts, faints from joy",
+  "text": "LT. BARCLAY / Holodeck",
+  "sync": "Windows pop on beats; faint on bar 16 downbeat"
+ },
+ {
+  "n": 7,
+  "start": 33.13,
+  "end": 37.17,
+  "section": "Build",
+  "camera": "Viewscreen frame, push to Picard",
+  "action": "PICARD sips tea, sets cup down, points: ENGAGE",
+  "text": "PICARD / Enterprise-D",
+  "sync": "Point lands on bar 18 downbeat"
+ },
+ {
+  "n": 8,
+  "start": 37.17,
+  "end": 41.22,
+  "section": "Build",
+  "camera": "Medium, slight dutch tilt",
+  "action": "GROK BOT stacks boxes, LED-meter mouth bounces to beat, stamps DONE",
+  "text": "GROK BOT",
+  "sync": "Meter on every beat; DONE stamp on bar 20 downbeat"
+ },
+ {
+  "n": 9,
+  "start": 41.22,
+  "end": 45.26,
+  "section": "Build",
+  "camera": "Medium two-shot",
+  "action": "RED SHIRT #47 beams in eager -> DELETE & RECREATE shimmer -> #48",
+  "text": "ENS. RED SHIRT #47 -> #48",
+  "sync": "Beam-out on bar 21, #48 in on bar 22"
+ },
+ {
+  "n": 10,
+  "start": 45.26,
+  "end": 49.3,
+  "section": "Build (swell)",
+  "camera": "Low hero angle, slow push",
+  "action": "CAPTAIN in chair rises, ENGAGE! point",
+  "text": "THE CAPTAIN / ENGAGE!",
+  "sync": "Swell 47.93 s -> point on 49.3 downbeat"
+ },
+ {
+  "n": 11,
+  "start": 49.3,
+  "end": 51.29,
+  "section": "CLIMAX",
+  "camera": "Whip-zoom into ship, star streaks",
+  "action": "WARP JUMP: streaks + ink flash",
+  "text": "WARP 9",
+  "sync": "Exactly on 49.3 s climax downbeat (biggest section change)"
+ },
+ {
+  "n": 12,
+  "start": 51.29,
+  "end": 57.31,
+  "section": "Climax",
+  "camera": "Rapid cuts, one per bar (2.04 s)",
+  "action": "Power-pose lineup: Picard hips, Riker grin, Grok Bot tada, Barclay thumbs, Red Shirt cheer",
+  "text": "-",
+  "sync": "One character punch-in per bar 25-27"
+ },
+ {
+  "n": 13,
+  "start": 57.31,
+  "end": 61.32,
+  "section": "Climax",
+  "camera": "Viewscreen snap-zoom",
+  "action": "DAIMON GRUBB cameo, gold bars, fine print",
+  "text": "DAIMON GRUBB (cameo)",
+  "sync": "Pops on 57.82 hit; out on 60.16 hit"
+ },
+ {
+  "n": 14,
+  "start": 61.32,
+  "end": 73.54,
+  "section": "Climax",
+  "camera": "Tracking banking flyby past planet",
+  "action": "Ship banks past planet with light streaks",
+  "text": "-",
+  "sync": "Bank on 63.34 hit; second pass on 70.96 hit"
+ },
+ {
+  "n": 15,
+  "start": 73.54,
+  "end": 85.89,
+  "section": "Climax (final lift)",
+  "camera": "Bridge wide; ship passes overhead on screen",
+  "action": "Full crew salute in sync, ship arcs toward camera",
+  "text": "-",
+  "sync": "Salute on 76.09 hit; ship hits camera on 83.78 hit"
+ },
+ {
+  "n": 16,
+  "start": 85.89,
+  "end": 93.2,
+  "section": "Outro",
+  "camera": "Static, existing sting timing",
+  "action": "STARSHIP GROKBOT title stamp + ship zips off; credit line",
+  "text": "STARSHIP GROKBOT / by Grok Bot & Nate Haskins",
+  "sync": "Stamp on 85.89 s bar; hold to fade-out at ~91 s"
+ }
+]

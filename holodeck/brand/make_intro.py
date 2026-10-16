@@ -25,6 +25,7 @@ def logo(pen, t):
         pen.line([(x - r, y), (x + r, y)], 4, INK, f'st{j}a'); pen.line([(x, y - r), (x, y + r)], 4, INK, f'st{j}b')
     SETS.outlined(pen, 'STARSHIP GROKBOT', (960, 745), 150, 8)          # tagline removed 2026-10-11: block nudged down 25 px
     pen.line([(420, 843), (960, 837), (1500, 845)], 7, INK, 'ul')
+    pen.text('by Grok Bot & Nate Haskins', (960, 905), 46, INK, 'hand')   # credit line added 2026-10-13
 
 def wipe(pen, t):
     k = ease(clamp01((t - T_W0) / (T_W1 - T_W0)))

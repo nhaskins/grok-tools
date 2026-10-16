@@ -1,0 +1,53 @@
+{
+ "total": 162.171,
+ "segs": [
+  {
+   "name": "intro",
+   "start": 0.0,
+   "dur": 1.0,
+   "gain": 0.7
+  },
+  {
+   "name": "card",
+   "start": 1.0,
+   "dur": 2.5,
+   "gain": 0.0
+  },
+  {
+   "name": "Voice Clone",
+   "start": 3.5,
+   "dur": 29.714,
+   "gain": -0.3
+  },
+  {
+   "name": "Wrong Monitor",
+   "start": 33.214,
+   "dur": 38.398,
+   "gain": 1.5
+  },
+  {
+   "name": "Hailing Loop",
+   "start": 71.612,
+   "dur": 26.575,
+   "gain": -0.1
+  },
+  {
+   "name": "Warp Nine Render",
+   "start": 98.187,
+   "dur": 30.016,
+   "gain": 0.4
+  },
+  {
+   "name": "Process Audit",
+   "start": 128.203,
+   "dur": 30.968,
+   "gain": 0.0
+  },
+  {
+   "name": "sting",
+   "start": 159.171,
+   "dur": 3.0,
+   "gain": 0.6
+  }
+ ]
+}

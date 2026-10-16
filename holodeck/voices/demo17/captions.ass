@@ -1,0 +1,27 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Line,Exo 2,58,&H00141618,&H00A8A8A8,&H00E6EEF3,&H00000000,1,0,0,0,100,100,1,0,1,6,0,2,90,90,42,1
+Style: Name,Permanent Marker,52,&H00141618,&H00141618,&H00E6EEF3,&H00000000,0,0,0,0,100,100,2,0,1,5,0,2,90,90,112,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 1,0:00:00.50,0:00:05.67,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k108}{\kf50}Grok {\kf67}Bot, {\kf12}my {\kf24}pen {\kf17}is {\kf26}drawing {\kf18}on {\kf9}the {\kf17}wrong {\kf86}monitor. {\kf29}Again.
+Dialogue: 1,0:00:00.50,0:00:05.67,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}RIKER
+Dialogue: 1,0:00:05.67,0:00:12.24,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)\fs44}{\k20}{\kf44}Beaming {\kf23}into {\kf18}your {\kf29}desktop {\kf108}now. {\kf1}I {\kf25}detect {\kf33}three {\kf88}monitors, {\kf13}two {\kf68}drivers, {\kf5}and {\kf30}one {\kf37}very {\kf50}confused {\kf28}pen.
+Dialogue: 1,0:00:05.67,0:00:12.24,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT
+Dialogue: 1,0:00:12.24,0:00:16.60,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k19}{\kf41}I, {\kf24}I {\kf21}drew {\kf16}a {\kf112}starship, {\kf3}but {\kf10}it {\kf25}landed {\kf21}on {\kf14}the {\kf40}sideways {\kf43}screen!
+Dialogue: 1,0:00:12.24,0:00:16.60,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}BARCLAY
+Dialogue: 1,0:00:16.60,0:00:20.83,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k19}{\kf82}Fixed. {\kf12}I {\kf19}added {\kf14}a {\kf33}watcher {\kf14}that {\kf21}checks {\kf20}the {\kf21}pen {\kf28}every {\kf27}three {\kf35}seconds.
+Dialogue: 1,0:00:16.60,0:00:20.83,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT
+Dialogue: 1,0:00:20.83,0:00:25.75,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k134}{\kf111}Great. {\kf28}Now {\kf19}my {\kf26}pen {\kf37}stutters {\kf28}worse {\kf25}than {\kf44}Barclay.
+Dialogue: 1,0:00:20.83,0:00:25.75,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}RIKER
+Dialogue: 1,0:00:25.75,0:00:31.77,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)\fs44}{\k19}{\kf108}Revised. {\kf25}One {\kf28}script {\kf19}at {\kf67}login, {\kf8}then {\kf14}it {\kf97}exits. {\kf12}Type {\kf66}fixpen {\kf21}if {\kf10}you {\kf16}ever {\kf44}replug.
+Dialogue: 1,0:00:25.75,0:00:31.77,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}GROK BOT
+Dialogue: 1,0:00:31.77,0:00:35.08,Line,,0,0,0,,{\fad(120,200)\move(960,1052,960,1038,0,180)}{\k19}{\kf100}Finally. {\kf9}A {\kf16}fix {\kf24}that {\kf21}knows {\kf23}when {\kf16}to {\kf25}stop.
+Dialogue: 1,0:00:31.77,0:00:35.08,Name,,0,0,0,,{\fad(120,200)\pos(960,972)\fscx90\fscy90\t(0,140,\fscx100\fscy100)}PICARD
